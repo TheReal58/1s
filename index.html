@@ -109,9 +109,9 @@
     window.autoFall = null;
     window.moveObj = null;
     window.trySlideDown = null;
-    window.EASY = 0.95;
-    window.MEDIUM = 0.90;
-    window.HARD = 0.85;
+    window.EASY = 0.85;
+    window.MEDIUM = 0.80;
+    window.HARD = 0.75;
     window.FACTOR = window.MEDIUM;
   </script>
   <script src="http://www.prat0318.com/2048-tetris/js/animframe_polyfill.js"></script>
@@ -127,7 +127,7 @@
   this.scoreManager = new ScoreManager;
   this.actuator     = new Actuator;
 
-  this.startTiles   = 1;
+  this.startTiles   = 2;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
@@ -183,20 +183,21 @@ GameManager.prototype.addStartTiles = function () {
 
 // Generates tile value
 GameManager.prototype.randomTile = function () {
-  var rand = Math.random()*Math.random();
-  return 2*Math.pow(2,Math.max((3,Math.floor((Math.log(this.max)/Math.log(2))*rand))));
-}
+  var rand = Math.random();
+  return rand < 0.7 ? 1 : (rand < 0.9 ? 2 : 3);
+};
+
 
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     window.timeOut = 700;
     if(window.trySlideDown) {
-      window.moveObj.move(1); clearTimeout(window.trySlideDown); window.trySlideDown = null;
+      window.moveObj.move(2); clearTimeout(window.trySlideDown); window.trySlideDown = null;
     }
     if(window.moveObj) {
       clearTimeout(window.autoFall);
-      window.autoFall = setTimeout(function(){window.moveObj.move(2);}, window.timeOut);
+      window.autoFall = setTimeout(function(){window.moveObj.move(4);}, window.timeOut);
     }
     var tile = new Tile(this.grid.randomAvailableCell(), this.nextTile);
     this.nextTile = this.randomTile();
